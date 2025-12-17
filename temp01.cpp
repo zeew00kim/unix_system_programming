@@ -1,30 +1,7 @@
-#include <iostream>
-#include <unistd.h>
-#include <sys/types.h>
-#include <pthread.h>
-using namespace std;
+// 서버 턴 획득 (P 연산)
+sops.sem_op = -1;
+if (semop(semId, &sops, 1) == -1) break;
 
-int main() {
-
-    pid_t pid;
-
-    cout << "Before fork() system call (PID : " << pid << ")" << endl;
-
-    if ((pid = fork()) == -1) {
-        perror("result of fork sys call");
-        exit(1);
-    }
-    else if (pid == 0) {
-        cout << "this is child process (PID : " << getpid() << ")" << endl;
-        sleep(2);
-        cout << "end of child..." << endl;
-    }
-    else {
-        cout << "Parent : " << getpid() << ", child : " << pid << endl;
-        cout << "end of parent" << endl;
-    }
-
-    cout << "program off" << endl;
-
-    return 0;
-}
+// 클라이언트 턴 해제 (V 연산)
+sops.sem_op = 1;
+if (semop(semId, &sops, 1) == -1) break;
